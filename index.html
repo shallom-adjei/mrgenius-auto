@@ -991,7 +991,7 @@
 
 <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
     <label style="font-weight:600; color:var(--gray-700);">Sort by:</label>
-    <select id="sortSelect" onchange="applyFilters()" style="padding:0.5rem 1rem; border-radius:8px; border:1px solid var(--gray-300); font-family:var(--font-sans); font-size:0.9rem; background:white;">
+    <select id="sortSelect" onchange="applyFilters(true)" style="padding:0.5rem 1rem; border-radius:8px; border:1px solid var(--gray-300); font-family:var(--font-sans); font-size:0.9rem; background:white;">
         <option value="default">Default (Newest)</option>
         <option value="price-asc">Price: Low to High</option>
         <option value="price-desc">Price: High to Low</option>
@@ -1016,6 +1016,11 @@
         <i class="fa-solid fa-spinner fa-spin" style="font-size:3rem; color:var(--gold);"></i>
         <p style="color:var(--gray-500); margin-top:1rem;">Loading cars…</p>
     </div>
+</div>
+        <div id="loadMoreContainer" style="text-align:center; margin-top:2rem; display:none;">
+    <button id="loadMoreBtn" style="background:var(--gold); color:var(--primary); border:none; padding:0.8rem 2.5rem; border-radius:50px; font-weight:700; font-size:1rem; cursor:pointer; font-family:var(--font-sans); box-shadow:var(--shadow-gold);">
+        <i class="fa-solid fa-chevron-down"></i> Load More Cars
+    </button>
 </div>
        <div class="no-results" id="noResults">
     <div style="max-width:400px; margin:0 auto;">
@@ -1245,6 +1250,13 @@
         let searchPriceVal = '';
         let searchLocationVal = '';
 
+        const CARS_PER_PAGE = 12;
+let lastVisibleDoc = null;      // for Firestore pagination
+let allCars = [];               // stores currently loaded cars (grows with load more)
+let isLoadingMore = false;      // prevents double clicks
+let noMoreCars = false;         // true when all cars from DB are loaded
+let currentFiltersChanged = false; // flag to reset on filter change
+
         function getAdminPhone() {
             const cached = localStorage.getItem('mrgenius_admin_settings');
             if (cached) {
@@ -1256,12 +1268,61 @@
             return getAdminPhone().replace(/[\s\+]/g, '');
         }
 
-        async function loadCarsFromFirestore() {
-            const snapshot = await db.collection('cars').orderBy('createdAt', 'desc').get();
-            allCars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            applyFilters();
-            document.getElementById('loadingSpinner').style.display = 'none';
-        }
+       async function loadCarsFromFirestore(reset = true) {
+  if (reset) {
+    // Reset everything for fresh load
+    allCars = [];
+    lastVisibleDoc = null;
+    noMoreCars = false;
+    document.getElementById('loadMoreContainer').style.display = 'none';
+    // Show spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('carsGrid').innerHTML = '';
+    document.getElementById('carsGrid').appendChild(document.getElementById('loadingSpinner'));
+  }
+
+  let query = db.collection('cars').orderBy('createdAt', 'desc').limit(CARS_PER_PAGE);
+
+  if (!reset && lastVisibleDoc) {
+    query = query.startAfter(lastVisibleDoc);
+  }
+
+  const snapshot = await query.get();
+
+  if (snapshot.empty) {
+    noMoreCars = true;
+    document.getElementById('loadMoreContainer').style.display = 'none';
+    if (reset) {
+      // No cars at all
+      document.getElementById('loadingSpinner').style.display = 'none';
+      renderCars([]);
+    }
+    return;
+  }
+
+  lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+  const newCars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  if (reset) {
+    allCars = newCars;
+  } else {
+    allCars = [...allCars, ...newCars];
+  }
+
+  // If we got fewer than requested, no more left
+  if (newCars.length < CARS_PER_PAGE) {
+    noMoreCars = true;
+    document.getElementById('loadMoreContainer').style.display = 'none';
+  } else {
+    document.getElementById('loadMoreContainer').style.display = 'block';
+  }
+
+  // Hide spinner
+  document.getElementById('loadingSpinner').style.display = 'none';
+
+  // Apply filters/sorting to the current set of loaded cars
+  applyFilters();
+}
         
         function renderCars(filteredCars) {
             carsGrid.innerHTML = '';
@@ -1366,8 +1427,15 @@ carsGrid.addEventListener('click', function(e) {
   }
 }
 
-        function applyFilters() {
-  let filtered = allCars;
+       function applyFilters(resetPagination = false) {
+  if (resetPagination) {
+    // Filters changed, so reload from scratch
+    loadCarsFromFirestore(true);
+    return;
+  }
+
+  // Filter and sort only the currently loaded cars (allCars grows with load more)
+  let filtered = [...allCars];
 
   if (activeBrand !== 'all') filtered = filtered.filter(car => car.make === activeBrand);
   if (searchMakeVal) filtered = filtered.filter(car => car.make === searchMakeVal);
@@ -1376,16 +1444,10 @@ carsGrid.addEventListener('click', function(e) {
 
   // Sorting
   const sortVal = document.getElementById('sortSelect').value;
-  if (sortVal === 'price-asc') {
-    filtered.sort((a, b) => a.price - b.price);
-  } else if (sortVal === 'price-desc') {
-    filtered.sort((a, b) => b.price - a.price);
-  } else if (sortVal === 'year-desc') {
-    filtered.sort((a, b) => b.year - a.year);
-  } else if (sortVal === 'year-asc') {
-    filtered.sort((a, b) => a.year - b.year);
-  }
-  // default keeps Firestore's original order (by createdAt)
+  if (sortVal === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+  else if (sortVal === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+  else if (sortVal === 'year-desc') filtered.sort((a, b) => b.year - a.year);
+  else if (sortVal === 'year-asc') filtered.sort((a, b) => a.year - b.year);
 
   renderCars(filtered);
 }
@@ -1452,7 +1514,7 @@ carsGrid.addEventListener('click', function(e) {
                 document.querySelectorAll('#brandFilter .brand-chip').forEach(c => c.classList.remove('active-filter'));
                 chip.classList.add('active-filter');
                 activeBrand = chip.getAttribute('data-brand');
-                applyFilters();
+                applyFilters(true);
             });
         });
 
@@ -1465,8 +1527,17 @@ carsGrid.addEventListener('click', function(e) {
             const allChip = document.querySelector('#brandFilter .brand-chip[data-brand="all"]');
             if (allChip) allChip.classList.add('active-filter');
             activeBrand = 'all';
-            applyFilters();
+            applyFilters(true);
         });
+
+        document.getElementById('loadMoreBtn').addEventListener('click', async () => {
+  if (isLoadingMore || noMoreCars) return;
+  isLoadingMore = true;
+  document.getElementById('loadMoreBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading…';
+  await loadCarsFromFirestore(false);
+  document.getElementById('loadMoreBtn').innerHTML = '<i class="fa-solid fa-chevron-down"></i> Load More Cars';
+  isLoadingMore = false;
+});
 
         // Detail modal
         let detailCar = null;
@@ -1583,7 +1654,7 @@ carsGrid.addEventListener('click', function(e) {
             }, 100);
         });
 
-        loadCarsFromFirestore();
+        loadCarsFromFirestore(true);
         console.log('🏎️  Mr. Genius Premium Automobile — Ready!');
         
 function clearAllFilters() {
