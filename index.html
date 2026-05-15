@@ -1241,8 +1241,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        let allCars = [];
+        
         const carsGrid = document.getElementById('carsGrid');
         const noResults = document.getElementById('noResults');
         let activeBrand = 'all';
@@ -1321,7 +1320,7 @@ let currentFiltersChanged = false; // flag to reset on filter change
   document.getElementById('loadingSpinner').style.display = 'none';
 
   // Apply filters/sorting to the current set of loaded cars
-  applyFilters();
+  applyFilters(true);
 }
         
         function renderCars(filteredCars) {
