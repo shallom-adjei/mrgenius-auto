@@ -1239,6 +1239,23 @@
             appId: "1:83033327880:web:498a1adeabbc19320c84bd",
             measurementId: "G-05V1FT2EJT"
         };
+        
+async function loadHeroBanner() {
+  try {
+    const doc = await db.collection('settings').doc('site').get();
+    if (doc.exists && doc.data().bannerImage) {
+      const bannerUrl = doc.data().bannerImage;
+      document.querySelector('.hero').style.background = 
+        `url(${bannerUrl}) center/cover no-repeat, linear-gradient(160deg, #060e1a 0%, #0a1a30 30%, #0d2038 60%, #0a1628 100%)`;
+    }
+  } catch (error) {
+    console.log('No custom banner set.');
+  }
+}
+
+// Call it after page loads
+loadHeroBanner();
+        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
