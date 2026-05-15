@@ -894,18 +894,20 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
 
 </head>
 <body>
 
-    <!-- PASSWORD PROTECTION -->
-<div id="passwordOverlay" style="position:fixed; inset:0; background:rgba(10,22,40,0.95); z-index:9999; display:flex; align-items:center; justify-content:center;">
+  <!-- FIREBASE LOGIN OVERLAY -->
+<div id="loginOverlay" style="position:fixed; inset:0; background:rgba(10,22,40,0.95); z-index:9999; display:flex; align-items:center; justify-content:center;">
     <div style="background:white; padding:2rem; border-radius:20px; text-align:center; max-width:360px; width:90%;">
         <h2 style="margin-bottom:1rem;">🔐 Admin Login</h2>
-        <input type="password" id="adminPasswordInput" placeholder="Enter password" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:1rem; font-size:1rem;">
-        <button onclick="checkPassword()" style="background:var(--gold); color:var(--primary); border:none; padding:0.7rem 2rem; border-radius:50px; font-weight:700; font-size:1rem; cursor:pointer; width:100%;">Login</button>
-        <p id="passwordError" style="color:red; margin-top:0.5rem; display:none;">Wrong password</p>
+        <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:0.8rem; font-size:1rem;">
+        <input type="password" id="loginPassword" placeholder="Password" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:1rem; font-size:1rem;">
+        <button onclick="signIn()" style="background:var(--gold); color:var(--primary); border:none; padding:0.7rem 2rem; border-radius:50px; font-weight:700; font-size:1rem; cursor:pointer; width:100%;">Login</button>
+        <p id="loginError" style="color:red; margin-top:0.5rem; display:none;"></p>
     </div>
 </div>
 
@@ -1105,14 +1107,6 @@
                             <label>Website URL</label>
                             <input type="text" value="https://mrgeniusauto.com" id="settingsUrl">
                         </div>
-                        <div class="form-group">
-    <label>Change Admin Password</label>
-    <input type="text" id="settingsPassword" placeholder="New password">
-</div>
-<button class="btn btn-primary" onclick="changePassword()" style="margin-top:0.5rem;">
-    <i class="fa-solid fa-key"></i> Update Password
-</button>
-<span id="passwordChanged" style="color:var(--green); margin-left:1rem; font-weight:600; display:none;">✓ Updated!</span>
                         <button class="btn btn-primary" onclick="saveSettings()">
                             <i class="fa-solid fa-floppy-disk"></i> Save Settings
                         </button>
@@ -1245,40 +1239,7 @@
 
     <script>
 
-// ============ PASSWORD PROTECTION ============
-const STORAGE_KEY = 'mrgenius_admin_pwd';
-const DEFAULT_PASSWORD = 'admin123';
 
-function getStoredPassword() {
-  return localStorage.getItem(STORAGE_KEY) || DEFAULT_PASSWORD;
-}
-
-function checkPassword() {
-  const input = document.getElementById('adminPasswordInput');
-  const error = document.getElementById('passwordError');
-  if (input.value === getStoredPassword()) {
-    document.getElementById('passwordOverlay').style.display = 'none';
-    // Initialize the admin panel after successful login
-    initAdmin();
-  } else {
-    error.style.display = 'block';
-  }
-}
-
-// Allow pressing Enter to login
-document.getElementById('adminPasswordInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') checkPassword();
-});
-
-// ============ INITIALIZATION (moved inside checkPassword) ============
-async function initAdmin() {
-  loadSettings(); 
-  carsData = await loadCarsFromFirestore();
-  refreshDashboard();
-  renderCarTable();
-  renderInquiries();
-}
-// DO NOT call initAdmin() here – it will be called after password is entered
 
 // 🔥 Firebase init
 const firebaseConfig = {
@@ -1294,6 +1255,57 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const carsCollection = db.collection('cars');
+        
+        // ============ FIREBASE AUTH ============
+const auth = firebase.auth();
+
+// Show the main admin UI after login
+function showAdminPanel() {
+  document.getElementById('loginOverlay').style.display = 'none';
+  initAdmin();  // loads cars & starts the dashboard
+}
+
+// Sign in with email/password
+function signIn() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorEl = document.getElementById('loginError');
+  if (!email || !password) {
+    errorEl.textContent = 'Please enter email and password.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      // successful login – auth state observer will call showAdminPanel()
+    })
+    .catch((error) => {
+      errorEl.textContent = error.message;
+      errorEl.style.display = 'block';
+    });
+}
+
+// Allow Enter key to login
+document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') signIn();
+});
+
+// Listen to auth state – if already logged in, skip login
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    showAdminPanel();
+  } else {
+    // Show login overlay (already visible by default)
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
+});
+
+// Logout function (update existing handleLogout)
+function handleLogout() {
+  auth.signOut().then(() => {
+    showToast('👋 Logged out.', 'success');
+  });
+}
 let carsData = [];
 let currentPage = 'dashboard';
 let carToDelete = null;
@@ -1748,15 +1760,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
                 openAddCarModal();
             }
         });
-
-        function changePassword() {
-  const newPwd = document.getElementById('settingsPassword').value.trim();
-  if (!newPwd) { showToast('Please enter a new password.', 'error'); return; }
-  localStorage.setItem(STORAGE_KEY, newPwd);
-  document.getElementById('passwordChanged').style.display = 'inline';
-  setTimeout(() => { document.getElementById('passwordChanged').style.display = 'none'; }, 2500);
-  showToast('🔑 Password updated! Use it next time you login.', 'success');
-}
 
         // ============ AUTO-REFRESH STATS EVERY 30 SECONDS ============
         setInterval(() => {
