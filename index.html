@@ -1373,29 +1373,49 @@ carsGrid.addEventListener('click', function(e) {
             }
         }
 
-        function submitSellForm(e) {
-            e.preventDefault();
-            const name = document.getElementById('sellName').value.trim();
-            const phone = document.getElementById('sellPhone').value.trim();
-            const email = document.getElementById('sellEmail').value.trim();
-            const carDetails = document.getElementById('sellCarDetails').value.trim();
-            const price = document.getElementById('sellPrice').value.trim();
-            const adminPhone = getAdminPhoneClean();
-            const message = `Hello Mr. Genius Auto!%0A%0A` +
-                `I want to sell my car:%0A` +
-                `*Name:* ${encodeURIComponent(name)}%0A` +
-                `*Phone:* ${encodeURIComponent(phone)}%0A` +
-                `*Email:* ${encodeURIComponent(email)}%0A` +
-                `*Car Details:* ${encodeURIComponent(carDetails)}%0A` +
-                `*Asking Price:* GH₵ ${encodeURIComponent(price)}`;
-            window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
-            const msg = document.getElementById('sellFormMsg');
-            msg.textContent = '✅ Request sent! We will contact you soon.';
-            msg.style.color = 'var(--green)';
-            msg.style.display = 'block';
-            e.target.reset();
-            setTimeout(() => { msg.style.display = 'none'; }, 5000);
-        }
+       async function submitSellForm(e) {
+  e.preventDefault();
+  const name = document.getElementById('sellName').value.trim();
+  const phone = document.getElementById('sellPhone').value.trim();
+  const email = document.getElementById('sellEmail').value.trim();
+  const carDetails = document.getElementById('sellCarDetails').value.trim();
+  const price = document.getElementById('sellPrice').value.trim();
+
+  // ---------- Save to Firestore (new) ----------
+  try {
+    await db.collection('inquiries').add({
+      name,
+      phone,
+      email,
+      carDetails,
+      price,
+      type: 'sell-request',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Failed to save inquiry:', error);
+    // continue anyway – still send WhatsApp message
+  }
+
+  // ---------- Send WhatsApp message (keep unchanged) ----------
+  const adminPhone = getAdminPhoneClean();
+  const message = `Hello Mr. Genius Auto!%0A%0A` +
+    `I want to sell my car:%0A` +
+    `*Name:* ${encodeURIComponent(name)}%0A` +
+    `*Phone:* ${encodeURIComponent(phone)}%0A` +
+    `*Email:* ${encodeURIComponent(email)}%0A` +
+    `*Car Details:* ${encodeURIComponent(carDetails)}%0A` +
+    `*Asking Price:* GH₵ ${encodeURIComponent(price)}`;
+
+  window.open(`https://wa.me/${adminPhone}?text=${message}`, '_blank');
+
+  const msg = document.getElementById('sellFormMsg');
+  msg.textContent = '✅ Request sent! We will contact you soon.';
+  msg.style.color = 'var(--green)';
+  msg.style.display = 'block';
+  e.target.reset();
+  setTimeout(() => { msg.style.display = 'none'; }, 5000);
+}
 
         // Brand filter
         document.querySelectorAll('#brandFilter .brand-chip').forEach(chip => {
