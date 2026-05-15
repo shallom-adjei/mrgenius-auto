@@ -1320,7 +1320,7 @@ let currentFiltersChanged = false; // flag to reset on filter change
   document.getElementById('loadingSpinner').style.display = 'none';
 
   // Apply filters/sorting to the current set of loaded cars
-  applyFilters(true);
+  applyFilters(false);
 }
         
         function renderCars(filteredCars) {
@@ -1676,7 +1676,7 @@ function clearAllFilters() {
     if (sortSelect) sortSelect.value = 'default';
 
     // Re-apply (will show all cars)
-    applyFilters();
+    applyFilters(true);
 }
         
     </script>
