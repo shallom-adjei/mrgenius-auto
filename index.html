@@ -1256,8 +1256,6 @@ async function loadHeroBanner() {
   }
 }
 
-loadHeroBanner();
-
 // Call it after page loads
 loadHeroBanner();
         
@@ -1680,6 +1678,8 @@ carsGrid.addEventListener('click', function(e) {
 
         loadCarsFromFirestore(true);
         console.log('🏎️  Mr. Genius Premium Automobile — Ready!');
+
+        loadHeroBanner();
         
 function clearAllFilters() {
     // Reset brand chips
