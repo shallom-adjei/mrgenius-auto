@@ -1245,13 +1245,18 @@ async function loadHeroBanner() {
     const doc = await db.collection('settings').doc('site').get();
     if (doc.exists && doc.data().bannerImage) {
       const bannerUrl = doc.data().bannerImage;
-      document.querySelector('.hero').style.background = 
+      document.querySelector('.hero').style.background =
         `url(${bannerUrl}) center/cover no-repeat, linear-gradient(160deg, #060e1a 0%, #0a1a30 30%, #0d2038 60%, #0a1628 100%)`;
+      console.log('✅ Custom banner loaded.');
+    } else {
+      console.log('ℹ️ No custom banner set.');
     }
   } catch (error) {
-    console.log('No custom banner set.');
+    console.error('❌ Error loading banner:', error);
   }
 }
+
+loadHeroBanner();
 
 // Call it after page loads
 loadHeroBanner();
