@@ -1306,6 +1306,16 @@ function handleLogout() {
     showToast('👋 Logged out.', 'success');
   });
 }
+
+        // ============ INITIALIZATION ============
+async function initAdmin() {
+  loadSettings();
+  carsData = await loadCarsFromFirestore();
+  refreshDashboard();
+  renderCarTable();
+  renderInquiries();
+}
+        
 let carsData = [];
 let currentPage = 'dashboard';
 let carToDelete = null;
@@ -1727,16 +1737,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
         }
 
         document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
-
-        // ============ LOGOUT ============
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                showToast('👋 Logged out. Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
-            }
-        }
 
         // ============ MODAL CLOSE ON OVERLAY CLICK ============
         document.getElementById('carModalOverlay').addEventListener('click', function(e) {
