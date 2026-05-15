@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Mr. Genius Premium Automobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a1628;
+            --primary-light: #132038;
+            --primary-lighter: #1a2a48;
+            --gold: #c8963e;
+            --gold-light: #e0b864;
+            --gold-pale: #f5ecd7;
+            --red-accent: #b5343a;
+            --red-light: #fef2f2;
+            --green: #10b981;
+            --green-light: #ecfdf5;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+            --shadow-gold: 0 8px 30px rgba(200, 150, 62, 0.25);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: var(--font-sans);
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #0a1628 0%, #0d1f35 100%);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .sidebar-header {
+            padding: 1.5rem 1.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            color: var(--primary);
+            font-family: var(--font-display);
+            flex-shrink: 0;
+            box-shadow: var(--shadow-gold);
+        }
+        .sidebar-brand {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand span {
+            color: var(--gold-light);
+        }
+        .sidebar-badge {
+            font-size: 0.65rem;
+            background: var(--gold);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 50px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+            display: inline-block;
+        }
+        .sidebar-nav {
+            flex: 1;
+            padding: 1rem 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--white);
+        }
+        .sidebar-nav a.active {
+            background: rgba(200, 150, 62, 0.2);
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .sidebar-footer {
+            padding: 1rem 1.3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+        }
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+        }
+        .sidebar-footer a:hover {
+            color: var(--gold-light);
+        }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .sidebar-user-info {
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        .sidebar-user-name {
+            font-weight: 600;
+            color: var(--white);
+        }
+        .sidebar-user-role {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.7rem;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+        .topbar {
+            background: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .topbar-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--gray-900);
+            letter-spacing: -0.3px;
+        }
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .topbar-btn {
+            background: var(--gold);
+            color: var(--primary);
+            border: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-gold);
+            white-space: nowrap;
+        }
+        .topbar-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(200, 150, 62, 0.35);
+        }
+        .topbar-btn.outline {
+            background: transparent;
+            border: 2px solid var(--gray-300);
+            color: var(--gray-700);
+            box-shadow: none;
+        }
+        .topbar-btn.outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-pale);
+            box-shadow: none;
+        }
+        .hamburger-admin {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--gray-700);
+            cursor: pointer;
+            padding: 6px;
+        }
+        .content-area {
+            padding: 2rem;
+            max-width: 1400px;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ STAT CARDS ============ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.3rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-100);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.blue {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+        .stat-icon.green {
+            background: var(--green-light);
+            color: var(--green);
+        }
+        .stat-icon.gold {
+            background: var(--gold-pale);
+            color: var(--gold);
+        }
+        .stat-icon.red {
+            background: var(--red-light);
+            color: var(--red-accent);
+        }
+        .stat-info h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            letter-spacing: -0.5px;
+        }
+        .stat-info p {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        /* ============ TABLE ============ */
+        .table-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-100);
+            overflow: hidden;
+        }
+        .table-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .table-header h2 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--gray-900);
+            letter-spacing: -0.3px;
+        }
+        .table-search {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gray-50);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+        .table-search:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.08);
+        }
+        .table-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            width: 180px;
+        }
+        .table-search i {
+            color: var(--gray-400);
+            font-size: 0.85rem;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th,
+        table td {
+            padding: 0.9rem 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        table th {
+            background: var(--gray-50);
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        table td {
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+        }
+        table tbody tr {
+            transition: var(--transition);
+        }
+        table tbody tr:hover {
+            background: var(--gray-50);
+        }
+        .table-img {
+            width: 50px;
+            height: 36px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--gray-200);
+        }
+        .table-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .table-badge.active {
+            background: var(--green-light);
+            color: var(--green);
+        }
+        .table-badge.featured {
+            background: var(--gold-pale);
+            color: #8b6914;
+        }
+        .table-badge.draft {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+        .action-btns {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+        .btn-icon.edit:hover {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+        .btn-icon.delete:hover {
+            background: var(--red-light);
+            color: var(--red-accent);
+        }
+
+        /* ============ MODAL ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            padding: 1rem;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition);
+            transform: translateY(20px);
+        }
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 1;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        .modal-header h2 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--gray-900);
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gray-100);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+        }
+        .modal-close:hover {
+            background: var(--gray-200);
+            color: var(--gray-900);
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.2px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: var(--gray-50);
+            color: var(--gray-800);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.08);
+            background: var(--white);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        .image-preview {
+            width: 100%;
+            height: 140px;
+            border-radius: var(--radius);
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            border: 2px dashed var(--gray-300);
+            transition: var(--transition);
+        }
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-preview.has-image {
+            border-color: var(--green);
+            border-style: solid;
+        }
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            position: sticky;
+            bottom: 0;
+            background: var(--white);
+            border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        }
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            font-family: var(--font-sans);
+            letter-spacing: 0.2px;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--primary);
+            box-shadow: var(--shadow-gold);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(200, 150, 62, 0.35);
+        }
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+        .btn-danger {
+            background: var(--red-accent);
+            color: var(--white);
+        }
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* ============ CONFIRM DIALOG ============ */
+        .confirm-dialog {
+            position: fixed;
+            inset: 0;
+            z-index: 250;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+        }
+        .confirm-dialog.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .confirm-box {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+        }
+        .confirm-box i {
+            font-size: 3rem;
+            color: var(--red-accent);
+            margin-bottom: 1rem;
+        }
+        .confirm-box h3 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+        .confirm-box p {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .confirm-box .btn-group {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 300;
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 0.9rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            transform: translateY(20px);
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+        .toast.success {
+            background: var(--green);
+        }
+        .toast.error {
+            background: var(--red-accent);
+        }
+
+        /* ============ INQUIRY CARDS ============ */
+        .inquiries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.2rem;
+        }
+        .inquiry-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-100);
+            transition: var(--transition);
+        }
+        .inquiry-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .inquiry-card h4 {
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.3rem;
+        }
+        .inquiry-card .inquiry-meta {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-bottom: 0.6rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .inquiry-card .inquiry-msg {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .inquiry-card .inquiry-car {
+            background: var(--gray-50);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .sidebar {
+                left: -100%;
+                width: 280px;
+            }
+            .sidebar.open {
+                left: 0;
+                box-shadow: var(--shadow-xl);
+            }
+            .main {
+                margin-left: 0;
+            }
+            .hamburger-admin {
+                display: block;
+            }
+            .sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 99;
+                opacity: 0;
+                pointer-events: none;
+                transition: var(--transition);
+            }
+            .sidebar-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 640px) {
+            .content-area {
+                padding: 1rem;
+            }
+            .topbar {
+                padding: 0.8rem 1rem;
+            }
+            .topbar-title {
+                font-size: 1rem;
+            }
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .stat-card {
+                padding: 1rem;
+                gap: 0.6rem;
+            }
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .stat-info h3 {
+                font-size: 1.2rem;
+            }
+            .table-header {
+                padding: 1rem;
+            }
+            table th,
+            table td {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            .inquiries-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal {
+                max-width: 95vw;
+                border-radius: var(--radius-lg);
+            }
+        }
+    </style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+
+</head>
+<body>
+
+    <!-- PASSWORD PROTECTION -->
+<div id="passwordOverlay" style="position:fixed; inset:0; background:rgba(10,22,40,0.95); z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <div style="background:white; padding:2rem; border-radius:20px; text-align:center; max-width:360px; width:90%;">
+        <h2 style="margin-bottom:1rem;">🔐 Admin Login</h2>
+        <input type="password" id="adminPasswordInput" placeholder="Enter password" style="width:100%; padding:0.8rem; border:1px solid #ddd; border-radius:8px; margin-bottom:1rem; font-size:1rem;">
+        <button onclick="checkPassword()" style="background:var(--gold); color:var(--primary); border:none; padding:0.7rem 2rem; border-radius:50px; font-weight:700; font-size:1rem; cursor:pointer; width:100%;">Login</button>
+        <p id="passwordError" style="color:red; margin-top:0.5rem; display:none;">Wrong password</p>
+        <p style="font-size:0.8rem; color:gray; margin-top:1rem;">Default password: <code>admin123</code></p>
+    </div>
+</div>
+
+    <!-- ============ SIDEBAR OVERLAY (MOBILE) ============ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo-icon">MG</div>
+            <div>
+                <div class="sidebar-brand">Mr. Genius<span>Auto</span></div>
+                <span class="sidebar-badge">ADMIN</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a data-page="dashboard" class="active" onclick="navigateTo('dashboard', this)">
+                <i class="fa-solid fa-grid-2"></i> Dashboard
+            </a>
+            <a data-page="cars" onclick="navigateTo('cars', this)">
+                <i class="fa-solid fa-car"></i> Car Listings
+            </a>
+            <a data-page="inquiries" onclick="navigateTo('inquiries', this)">
+                <i class="fa-solid fa-envelope"></i> Inquiries
+                <span style="margin-left:auto;background:var(--red-accent);color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:50px;font-weight:700;">3</span>
+            </a>
+            <a data-page="settings" onclick="navigateTo('settings', this)">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">SA</div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">Shallom Admin</div>
+                    <div class="sidebar-user-role">Super Admin</div>
+                </div>
+            </div>
+            <a href="index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Website</a>
+            <a href="#" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <div class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <button class="hamburger-admin" onclick="toggleSidebar()" aria-label="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <span class="topbar-title" id="pageTitle">📊 Dashboard</span>
+            </div>
+            <div class="topbar-actions">
+                <button class="topbar-btn outline" onclick="navigateTo('inquiries')">
+                    <i class="fa-solid fa-bell"></i> <span class="hide-mobile">Notifications</span>
+                </button>
+                <button class="topbar-btn" onclick="openAddCarModal()">
+                    <i class="fa-solid fa-plus"></i> <span class="hide-mobile">Add New Car</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+
+            <!-- ============ DASHBOARD PAGE ============ -->
+            <div class="page active" id="page-dashboard">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fa-solid fa-car"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statTotalCars">12</h3>
+                            <p>Total Listings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fa-solid fa-check-circle"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statActive">10</h3>
+                            <p>Active Cars</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon gold"><i class="fa-solid fa-star"></i></div>
+                        <div class="stat-info">
+                            <h3 id="statFeatured">4</h3>
+                            <p>Featured Listings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="stat-info">
+                            <h3>3</h3>
+                            <p>New Inquiries</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-container" style="margin-top:1rem;">
+                    <div class="table-header">
+                        <h2>📋 Recent Listings</h2>
+                        <span style="font-size:0.8rem;color:var(--gray-500);">Last 5 added</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Model</th>
+                                    <th>Year</th>
+                                    <th>Price (GH₵)</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardRecentTable">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ CARS PAGE ============ -->
+            <div class="page" id="page-cars">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>🚗 All Car Listings</h2>
+                        <div style="display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;">
+                            <div class="table-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="carSearchInput" placeholder="Search cars..." oninput="renderCarTable()">
+                            </div>
+                            <button class="topbar-btn" onclick="openAddCarModal()">
+                                <i class="fa-solid fa-plus"></i> Add Car
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Model</th>
+                                    <th>Make</th>
+                                    <th>Year</th>
+                                    <th>Price (GH₵)</th>
+                                    <th>Mileage</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carTableBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="padding:1rem;text-align:center;color:var(--gray-400);display:none;" id="noCarResults">
+                        <i class="fa-solid fa-car-side" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                        No cars match your search.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ INQUIRIES PAGE ============ -->
+            <div class="page" id="page-inquiries">
+                <div class="section-header" style="margin-bottom:1.5rem;">
+                    <h2 style="font-weight:700;font-size:1.3rem;color:var(--gray-900);">📬 Customer Inquiries</h2>
+                    <p style="color:var(--gray-500);font-size:0.9rem;">Messages from potential buyers</p>
+                </div>
+                <div class="inquiries-grid" id="inquiriesGrid">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- ============ SETTINGS PAGE ============ -->
+            <div class="page" id="page-settings">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>⚙️ Admin Settings</h2>
+                    </div>
+                    <div style="padding:2rem;">
+                        <div class="form-group">
+                            <label>Admin Name</label>
+                            <input type="text" value="Shallom Admin" id="settingsName">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" value="admin@mrgeniusauto.com" id="settingsEmail">
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp Business Number</label>
+                            <input type="text" value="+233 54 959 8797" id="settingsPhone">
+                        </div>
+                        <div class="form-group">
+                            <label>Website URL</label>
+                            <input type="text" value="https://mrgeniusauto.com" id="settingsUrl">
+                        </div>
+                        <div class="form-group">
+    <label>Change Admin Password</label>
+    <input type="text" id="settingsPassword" placeholder="New password">
+</div>
+<button class="btn btn-primary" onclick="changePassword()" style="margin-top:0.5rem;">
+    <i class="fa-solid fa-key"></i> Update Password
+</button>
+<span id="passwordChanged" style="color:var(--green); margin-left:1rem; font-weight:600; display:none;">✓ Updated!</span>
+                        <button class="btn btn-primary" onclick="saveSettings()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Settings
+                        </button>
+                        <span id="settingsSaved" style="color:var(--green);margin-left:1rem;font-weight:600;display:none;">✓ Saved!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ ADD/EDIT CAR MODAL ============ -->
+    <div class="modal-overlay" id="carModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="carModalTitle">🚗 Add New Car</h2>
+                <button class="modal-close" onclick="closeCarModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="carEditId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Make</label>
+                        <select id="carMake">
+                            <option value="toyota">Toyota</option>
+                            <option value="honda">Honda</option>
+                            <option value="hyundai">Hyundai</option>
+                            <option value="nissan">Nissan</option>
+                            <option value="kia">Kia</option>
+                            <option value="mercedes">Mercedes-Benz</option>
+                            <option value="bmw">BMW</option>
+                            <option value="ford">Ford</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        <input type="text" id="carModel" placeholder="e.g. Toyota Camry" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" id="carYear" placeholder="e.g. 2024" min="1990" max="2030" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (GH₵)</label>
+                        <input type="number" id="carPrice" placeholder="e.g. 185000" min="0" step="1000" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mileage</label>
+                        <input type="text" id="carMileage" placeholder="e.g. 38,000 km" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        <select id="carTransmission">
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        <select id="carFuel">
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="Electric">Electric</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <select id="carLocation">
+                            <option value="accra">Accra</option>
+                            <option value="kumasi">Kumasi</option>
+                            <option value="tema">Tema</option>
+                            <option value="tamale">Tamale</option>
+                            <option value="takoradi">Takoradi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="carCondition">
+                            <option value="used">Used</option>
+                            <option value="new">Brand New</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge</label>
+                        <select id="carBadge">
+                            <option value="">None</option>
+                            <option value="featured">⭐ Featured</option>
+                            <option value="new">✨ New</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+  <label>Car Images (select multiple)</label>
+  <input type="file" id="carImages" accept="image/*" multiple onchange="previewMultipleImages()">
+  <div id="imagePreviews" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
+</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCarModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveCar()">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Car
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CONFIRM DELETE DIALOG ============ -->
+    <div class="confirm-dialog" id="confirmDialog">
+        <div class="confirm-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Delete This Car?</h3>
+            <p>This action cannot be undone. The listing will be permanently removed.</p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeConfirmDialog()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST ============ -->
+<div class="toast" id="toast"></div>
+
+    <script>
+
+// ============ PASSWORD PROTECTION ============
+const STORAGE_KEY = 'mrgenius_admin_pwd';
+const DEFAULT_PASSWORD = 'admin123';
+
+function getStoredPassword() {
+  return localStorage.getItem(STORAGE_KEY) || DEFAULT_PASSWORD;
+}
+
+function checkPassword() {
+  const input = document.getElementById('adminPasswordInput');
+  const error = document.getElementById('passwordError');
+  if (input.value === getStoredPassword()) {
+    document.getElementById('passwordOverlay').style.display = 'none';
+    // Initialize the admin panel after successful login
+    initAdmin();
+  } else {
+    error.style.display = 'block';
+  }
+}
+
+// Allow pressing Enter to login
+document.getElementById('adminPasswordInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPassword();
+});
+
+// ============ INITIALIZATION (moved inside checkPassword) ============
+async function initAdmin() {
+  loadSettings(); 
+  carsData = await loadCarsFromFirestore();
+  refreshDashboard();
+  renderCarTable();
+  renderInquiries();
+}
+// DO NOT call initAdmin() here – it will be called after password is entered
+
+// 🔥 Firebase init
+const firebaseConfig = {
+  apiKey: "AIzaSyDSezeeWlC7GtYmvYCJaUHHVt0zh-bW-J8",
+  authDomain: "mrgeniusautos.firebaseapp.com",
+  projectId: "mrgeniusautos",
+  storageBucket: "mrgeniusautos.firebasestorage.app",
+  messagingSenderId: "83033327880",
+  appId: "1:83033327880:web:498a1adeabbc19320c84bd",
+  measurementId: "G-05V1FT2EJT"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const carsCollection = db.collection('cars');
+let carsData = [];
+let currentPage = 'dashboard';
+let carToDelete = null;
+
+        // ============ CAR DATA (loaded from localStorage or default) ============
+        const defaultCars = [
+            { id: 1, make: 'toyota', model: 'Toyota Camry', year: 2022, price: 185000, mileage: '38,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'accra', condition: 'used', badge: 'featured',
+                image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&h=400&fit=crop' },
+            { id: 2, make: 'honda', model: 'Honda Civic', year: 2023, price: 220000, mileage: '15,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'kumasi', condition: 'new', badge: 'new',
+                image: 'https://images.unsplash.com/photo-1606611013016-969c19ba27b8?w=600&h=400&fit=crop' },
+            { id: 3, make: 'hyundai', model: 'Hyundai Elantra', year: 2021, price: 145000, mileage: '52,000 km',
+                transmission: 'Automatic', fuel: 'Diesel', location: 'tema', condition: 'used', badge: '',
+                image: 'https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=600&h=400&fit=crop' },
+            { id: 4, make: 'nissan', model: 'Nissan Altima', year: 2022, price: 168000, mileage: '28,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'accra', condition: 'used', badge: 'featured',
+                image: 'https://images.unsplash.com/photo-1550355292-bbee6e24e5d0?w=600&h=400&fit=crop' },
+            { id: 5, make: 'kia', model: 'Kia Rio', year: 2023, price: 95000, mileage: '8,000 km',
+                transmission: 'Manual', fuel: 'Petrol', location: 'tamale', condition: 'new', badge: 'new',
+                image: 'https://images.unsplash.com/photo-1549317661-bd32c5c8b3d9?w=600&h=400&fit=crop' },
+            { id: 6, make: 'toyota', model: 'Toyota Corolla', year: 2020, price: 130000, mileage: '65,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'takoradi', condition: 'used', badge: '',
+                image: 'https://images.unsplash.com/photo-1592198081736-49b8e4b4e0c3?w=600&h=400&fit=crop' },
+            { id: 7, make: 'mercedes', model: 'Mercedes C-Class', year: 2023, price: 350000, mileage: '5,000 km',
+                transmission: 'Automatic', fuel: 'Diesel', location: 'accra', condition: 'new', badge: 'featured',
+                image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?w=600&h=400&fit=crop' },
+            { id: 8, make: 'bmw', model: 'BMW 3 Series', year: 2022, price: 280000, mileage: '22,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'kumasi', condition: 'used', badge: '',
+                image: 'https://images.unsplash.com/photo-1552519288-0a2e8d0b8f3a?w=600&h=400&fit=crop' },
+            { id: 9, make: 'hyundai', model: 'Hyundai Tucson', year: 2023, price: 250000, mileage: '12,000 km',
+                transmission: 'Automatic', fuel: 'Diesel', location: 'accra', condition: 'new', badge: 'new',
+                image: 'https://images.unsplash.com/photo-1605559424843-9e4ea3197a5c?w=600&h=400&fit=crop' },
+            { id: 10, make: 'toyota', model: 'Toyota RAV4', year: 2021, price: 210000, mileage: '45,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'tema', condition: 'used', badge: 'featured',
+                image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop' },
+            { id: 11, make: 'nissan', model: 'Nissan Qashqai', year: 2022, price: 175000, mileage: '30,000 km',
+                transmission: 'Automatic', fuel: 'Petrol', location: 'kumasi', condition: 'used', badge: '',
+                image: 'https://images.unsplash.com/photo-1503376780358-8e84647e40e2?w=600&h=400&fit=crop' },
+            { id: 12, make: 'kia', model: 'Kia Sorento', year: 2023, price: 290000, mileage: '3,000 km',
+                transmission: 'Automatic', fuel: 'Diesel', location: 'accra', condition: 'new', badge: 'new',
+                image: 'https://images.unsplash.com/photo-1547245324-d777c6f7b2e3?w=600&h=400&fit=crop' },
+        ];
+
+        const dummyInquiries = [
+            { id: 1, name: 'Kwame Asante', email: 'kwame@email.com', phone: '+233 50 123 4567',
+                message: 'I am interested in the Toyota Camry listed at GH₵ 185,000. Is it still available? Can I schedule an inspection this weekend?',
+                car: 'Toyota Camry 2022', date: '2026-05-10', location: 'Accra' },
+            { id: 2, name: 'Abena Amankwah', email: 'abena@email.com', phone: '+233 24 987 6543',
+                message: 'Hello, I want to know if the Honda Civic is negotiable. I have a budget of GH₵ 200,000. Please let me know.',
+                car: 'Honda Civic 2023', date: '2026-05-12', location: 'Kumasi' },
+            { id: 3, name: 'Emmanuel Nartey', email: 'emmanuel@email.com', phone: '+233 55 456 7890',
+                message: 'I saw your Mercedes C-Class listing. Can you confirm the mileage and if it has a valid warranty? Very interested buyer here.',
+                car: 'Mercedes C-Class 2023', date: '2026-05-13', location: 'Tema' },
+        ];
+
+        // Load cars from Firestore
+async function loadCarsFromFirestore() {
+  const snapshot = await carsCollection.orderBy('createdAt', 'desc').get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+// Save car (add or update)
+async function saveCarToFirestore(carData, docId = null) {
+  if (docId) {
+    await carsCollection.doc(docId).update(carData);
+  } else {
+    const docRef = await carsCollection.add({
+      ...carData,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    return docRef.id;
+  }
+}
+
+function previewMultipleImages() {
+  const files = document.getElementById('carImages').files;
+  const container = document.getElementById('imagePreviews');
+  container.innerHTML = '';
+  for (let file of files) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style = 'width:100px; height:70px; object-fit:cover; border-radius:8px; border:2px solid #e5e7eb;';
+      container.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// Compress image file to a small Base64 string
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    new Compressor(file, {
+      quality: 0.7,
+      maxWidth: 800,
+      maxHeight: 600,
+      mimeType: 'image/jpeg',
+      success(result) {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(result);
+      },
+      error(err) { reject(err); }
+    });
+  });
+}
+
+// Process all selected files
+async function processImages(files) {
+  const base64Array = [];
+  for (let file of files) {
+    const compressed = await compressImage(file);
+    base64Array.push(compressed);
+  }
+  return base64Array;
+}
+
+// Delete car
+async function deleteCarFromFirestore(docId) {
+  await carsCollection.doc(docId).delete();
+}
+
+        // ============ NAVIGATION ============
+        function navigateTo(page, linkEl) {
+            currentPage = page;
+            // Update sidebar links
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            if (linkEl) linkEl.classList.add('active');
+            else {
+                const match = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
+                if (match) match.classList.add('active');
+            }
+            // Show page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const pageEl = document.getElementById('page-' + page);
+            if (pageEl) pageEl.classList.add('active');
+            // Update title
+            const titles = { dashboard: '📊 Dashboard', cars: '🚗 Car Listings', inquiries: '📬 Inquiries',
+                settings: '⚙️ Settings' };
+            document.getElementById('pageTitle').textContent = titles[page] || 'Admin Panel';
+            // Refresh content
+            if (page === 'dashboard') refreshDashboard();
+            if (page === 'cars') renderCarTable();
+            if (page === 'inquiries') renderInquiries();
+            // Close sidebar on mobile
+            closeSidebar();
+        }
+
+        function refreshDashboard() {
+            document.getElementById('statTotalCars').textContent = carsData.length;
+            document.getElementById('statActive').textContent = carsData.length;
+            document.getElementById('statFeatured').textContent = carsData.filter(c => c.badge === 'featured')
+                .length;
+            const recentTable = document.getElementById('dashboardRecentTable');
+            const recent = carsData.slice(-5).reverse();
+            recentTable.innerHTML = recent.map(c => `
+                <tr>
+                    <td><img src="${c.images && c.images.length ? c.images[0] : 'https://via.placeholder.com/50'}" alt="${c.model}" class="table-img" onerror="this.style.display='none';this.parentElement.innerHTML='🚗';"></td>
+                    <td><strong>${c.model}</strong></td>
+                    <td>${c.year}</td>
+                    <td>GH₵ ${c.price.toLocaleString()}</td>
+                    <td>${c.location.charAt(0).toUpperCase() + c.location.slice(1)}</td>
+                    <td><span class="table-badge ${c.badge === 'featured' ? 'featured' : c.badge === 'new' ? 'active' : 'draft'}">${c.badge ? c.badge.toUpperCase() : 'Standard'}</span></td>
+                </tr>
+            `).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray-400);">No cars listed yet.</td></tr>';
+        }
+
+        // ============ CAR TABLE ============
+        function renderCarTable() {
+            const searchTerm = (document.getElementById('carSearchInput')?.value || '').toLowerCase();
+            const filtered = carsData.filter(c =>
+                c.model.toLowerCase().includes(searchTerm) ||
+                c.make.toLowerCase().includes(searchTerm) ||
+                c.location.toLowerCase().includes(searchTerm)
+            );
+            const tbody = document.getElementById('carTableBody');
+            const noResults = document.getElementById('noCarResults');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+                tbody.innerHTML = filtered.map(c => `
+                    <tr>
+                        <td><img src="${c.images && c.images.length ? c.images[0] : 'https://via.placeholder.com/50'}" alt="${c.model}" class="table-img" onerror="this.style.display='none';this.parentElement.innerHTML='🚗';"></td>
+                        <td><strong>${c.model}</strong></td>
+                        <td>${c.make.charAt(0).toUpperCase() + c.make.slice(1)}</td>
+                        <td>${c.year}</td>
+                        <td><strong>GH₵ ${c.price.toLocaleString()}</strong></td>
+                        <td>${c.mileage}</td>
+                        <td>${c.location.charAt(0).toUpperCase() + c.location.slice(1)}</td>
+                        <td><span class="table-badge ${c.badge === 'featured' ? 'featured' : c.badge === 'new' ? 'active' : 'draft'}">${c.badge ? c.badge.toUpperCase() : 'Standard'}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-icon edit" onclick="openEditCarModal('${c.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon delete" onclick="confirmDeleteCar('${c.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // ============ INQUIRIES ============
+        function renderInquiries() {
+            const grid = document.getElementById('inquiriesGrid');
+            grid.innerHTML = dummyInquiries.map(inq => `
+                <div class="inquiry-card">
+                    <h4>${inq.name}</h4>
+                    <div class="inquiry-meta">
+                        <span><i class="fa-solid fa-envelope"></i> ${inq.email}</span>
+                        <span><i class="fa-solid fa-phone"></i> ${inq.phone}</span>
+                        <span><i class="fa-solid fa-calendar"></i> ${inq.date}</span>
+                    </div>
+                    <p class="inquiry-msg">"${inq.message}"</p>
+                    <div class="inquiry-car">🚗 Interested in: <strong>${inq.car}</strong> — ${inq.location}</div>
+                    <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+                        <a href="https://wa.me/${inq.phone.replace(/[\s\+]/g,'')}" target="_blank" style="background:#25d366;color:#fff;padding:0.5rem 1rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+                            <i class="fa-brands fa-whatsapp"></i> Reply via WhatsApp
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============ CAR MODAL ============
+        function openAddCarModal() {
+            document.getElementById('carModalTitle').textContent = '🚗 Add New Car';
+            document.getElementById('carEditId').value = '';
+            resetCarForm();
+            document.getElementById('carModalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+     async function openEditCarModal(id) {
+  const car = carsData.find(c => c.id === id);
+  if (!car) return;
+  document.getElementById('carModalTitle').textContent = '✏️ Edit Car';
+  document.getElementById('carEditId').value = car.id;
+  document.getElementById('carMake').value = car.make;
+  document.getElementById('carModel').value = car.model;
+  document.getElementById('carYear').value = car.year;
+  document.getElementById('carPrice').value = car.price;
+  document.getElementById('carMileage').value = car.mileage;
+  document.getElementById('carTransmission').value = car.transmission;
+  document.getElementById('carFuel').value = car.fuel;
+  document.getElementById('carLocation').value = car.location;
+  document.getElementById('carCondition').value = car.condition;
+  document.getElementById('carBadge').value = car.badge || '';
+  // Clear the file input (can't pre-fill base64 images)
+  document.getElementById('carImages').value = '';
+  previewMultipleImages();
+  document.getElementById('carModalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+        function closeCarModal() {
+            document.getElementById('carModalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            resetCarForm();
+        }
+
+        function resetCarForm() {
+  document.getElementById('carEditId').value = '';
+  document.getElementById('carMake').value = 'toyota';
+  document.getElementById('carModel').value = '';
+  document.getElementById('carYear').value = '';
+  document.getElementById('carPrice').value = '';
+  document.getElementById('carMileage').value = '';
+  document.getElementById('carTransmission').value = 'Automatic';
+  document.getElementById('carFuel').value = 'Petrol';
+  document.getElementById('carLocation').value = 'accra';
+  document.getElementById('carCondition').value = 'used';
+  document.getElementById('carBadge').value = '';
+  // Clear file input
+  document.getElementById('carImages').value = '';
+  previewMultipleImages(); // clear previews
+}
+
+       async function saveCar() {
+  const editId = document.getElementById('carEditId').value; // Firestore doc ID when editing
+  const make = document.getElementById('carMake').value;
+  const model = document.getElementById('carModel').value.trim();
+  const year = parseInt(document.getElementById('carYear').value);
+  const price = parseInt(document.getElementById('carPrice').value);
+  const mileage = document.getElementById('carMileage').value.trim();
+  const transmission = document.getElementById('carTransmission').value;
+  const fuel = document.getElementById('carFuel').value;
+  const location = document.getElementById('carLocation').value;
+  const condition = document.getElementById('carCondition').value;
+  const badge = document.getElementById('carBadge').value;
+
+  // --- Validation ---
+  if (!model) { showToast('Please enter a model name.', 'error'); return; }
+  if (!year || year < 1990 || year > 2030) { showToast('Valid year required.', 'error'); return; }
+  if (!price || price < 0) { showToast('Valid price required.', 'error'); return; }
+  if (!mileage) { showToast('Please enter mileage.', 'error'); return; }
+
+  // --- Images ---
+  const files = document.getElementById('carImages').files;
+  let imageBase64Array = [];
+
+  if (files.length > 0) {
+    showToast('Processing images...', 'success');
+    imageBase64Array = await processImages(files);
+  } else if (editId) {
+    // If editing and no new files, keep existing images
+    const existingCar = carsData.find(c => c.id === editId);
+    imageBase64Array = existingCar?.images || [];
+  } else {
+    showToast('Please select at least one image.', 'error');
+    return;
+  }
+
+  const carData = {
+    make, model, year, price, mileage, transmission, fuel,
+    location, condition, badge,
+    images: imageBase64Array,  // array of Base64 strings
+  };
+
+  try {
+    if (editId) {
+      await saveCarToFirestore(carData, editId);
+      showToast('✅ Car updated!', 'success');
+    } else {
+      await saveCarToFirestore(carData);
+      showToast('✅ New car added!', 'success');
+    }
+    closeCarModal();
+    // Refresh local car list from Firestore
+    carsData = await loadCarsFromFirestore();
+    if (currentPage === 'cars') renderCarTable();
+    if (currentPage === 'dashboard') refreshDashboard();
+  } catch (error) {
+    showToast('Error: ' + error.message, 'error');
+  }
+}
+
+        // ============ DELETE CONFIRMATION ============
+       function confirmDeleteCar(id) {
+  carToDelete = id;
+  document.getElementById('confirmDialog').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConfirmDialog() {
+  carToDelete = null;
+  document.getElementById('confirmDialog').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+  if (carToDelete) {
+    await deleteCarFromFirestore(carToDelete);
+    carsData = carsData.filter(c => c.id !== carToDelete);
+    showToast('🗑️ Car deleted successfully!', 'success');
+    carToDelete = null;
+  }
+  closeConfirmDialog();
+  if (currentPage === 'cars') renderCarTable();
+  if (currentPage === 'dashboard') refreshDashboard();
+});
+
+        // ============ TOAST ============
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============ SETTINGS ============
+        function saveSettings() {
+            const name = document.getElementById('settingsName').value;
+            const email = document.getElementById('settingsEmail').value;
+            const phone = document.getElementById('settingsPhone').value;
+            const url = document.getElementById('settingsUrl').value;
+            localStorage.setItem('mrgenius_admin_settings', JSON.stringify({ name, email, phone, url }));
+            const saved = document.getElementById('settingsSaved');
+            saved.style.display = 'inline';
+            setTimeout(() => { saved.style.display = 'none'; }, 2500);
+            showToast('⚙️ Settings saved!', 'success');
+        }
+
+        function loadSettings() {
+            const stored = localStorage.getItem('mrgenius_admin_settings');
+            if (stored) {
+                try {
+                    const s = JSON.parse(stored);
+                    if (s.name) document.getElementById('settingsName').value = s.name;
+                    if (s.email) document.getElementById('settingsEmail').value = s.email;
+                    if (s.phone) document.getElementById('settingsPhone').value = s.phone;
+                    if (s.url) document.getElementById('settingsUrl').value = s.url;
+                } catch (e) {}
+            }
+        }
+
+        // ============ SIDEBAR TOGGLE (MOBILE) ============
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+        // ============ LOGOUT ============
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showToast('👋 Logged out. Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }
+        }
+
+        // ============ MODAL CLOSE ON OVERLAY CLICK ============
+        document.getElementById('carModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeCarModal();
+        });
+        document.getElementById('confirmDialog').addEventListener('click', function(e) {
+            if (e.target === this) closeConfirmDialog();
+        });
+
+        // ============ KEYBOARD SHORTCUTS ============
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (document.getElementById('carModalOverlay').classList.contains('active')) closeCarModal();
+                if (document.getElementById('confirmDialog').classList.contains('active'))
+                closeConfirmDialog();
+                closeSidebar();
+            }
+            // Ctrl+N or Alt+N to add new car
+            if ((e.ctrlKey || e.altKey) && e.key === 'n') {
+                e.preventDefault();
+                openAddCarModal();
+            }
+        });
+
+        function changePassword() {
+  const newPwd = document.getElementById('settingsPassword').value.trim();
+  if (!newPwd) { showToast('Please enter a new password.', 'error'); return; }
+  localStorage.setItem(STORAGE_KEY, newPwd);
+  document.getElementById('passwordChanged').style.display = 'inline';
+  setTimeout(() => { document.getElementById('passwordChanged').style.display = 'none'; }, 2500);
+  showToast('🔑 Password updated! Use it next time you login.', 'success');
+}
+
+        // ============ AUTO-REFRESH STATS EVERY 30 SECONDS ============
+        setInterval(() => {
+            if (currentPage === 'dashboard') refreshDashboard();
+        }, 30000);
+    </script>
+</body>
+</html>
