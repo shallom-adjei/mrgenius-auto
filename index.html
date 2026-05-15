@@ -999,10 +999,16 @@
         <p style="color:var(--gray-500); margin-top:1rem;">Loading cars…</p>
     </div>
 </div>
-        <div class="no-results" id="noResults">
-            <i class="fa-solid fa-car-side"></i>
-            <p>No cars match your filters. Try adjusting your search criteria.</p>
-        </div>
+       <div class="no-results" id="noResults">
+    <div style="max-width:400px; margin:0 auto;">
+        <i class="fa-solid fa-car-side" style="font-size:4rem; color:var(--gray-300); margin-bottom:1.5rem; display:block;"></i>
+        <h3 style="color:var(--gray-800); font-weight:700; margin-bottom:0.5rem;">No cars found</h3>
+        <p style="color:var(--gray-500); margin-bottom:1.5rem;">We couldn't find any listings matching your current filters. Try removing some filters or browsing all brands.</p>
+        <button onclick="clearAllFilters()" style="background:var(--gold); color:var(--primary); border:none; padding:0.7rem 2rem; border-radius:50px; font-weight:700; font-size:0.9rem; cursor:pointer; font-family:var(--font-sans); box-shadow:var(--shadow-gold);">
+            <i class="fa-solid fa-rotate-left"></i> Clear All Filters
+        </button>
+    </div>
+</div>
     </section>
 
     <section class="section" id="how-it-works">
@@ -1530,6 +1536,30 @@ carsGrid.addEventListener('click', function(e) {
 
         loadCarsFromFirestore();
         console.log('🏎️  Mr. Genius Premium Automobile — Ready!');
+        
+function clearAllFilters() {
+    // Reset brand chips
+    document.querySelectorAll('#brandFilter .brand-chip').forEach(c => c.classList.remove('active-filter'));
+    const allChip = document.querySelector('#brandFilter .brand-chip[data-brand="all"]');
+    if (allChip) allChip.classList.add('active-filter');
+    activeBrand = 'all';
+
+    // Reset search dropdowns
+    document.getElementById('searchMake').value = '';
+    document.getElementById('searchPrice').value = '';
+    document.getElementById('searchLocation').value = '';
+    searchMakeVal = '';
+    searchPriceVal = '';
+    searchLocationVal = '';
+
+    // Reset sort dropdown
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) sortSelect.value = 'default';
+
+    // Re-apply (will show all cars)
+    applyFilters();
+}
+        
     </script>
 </body>
 </html>
