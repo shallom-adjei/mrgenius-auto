@@ -1360,17 +1360,6 @@ let carToDelete = null;
                 image: 'https://images.unsplash.com/photo-1547245324-d777c6f7b2e3?w=600&h=400&fit=crop' },
         ];
 
-        const dummyInquiries = [
-            { id: 1, name: 'Kwame Asante', email: 'kwame@email.com', phone: '+233 50 123 4567',
-                message: 'I am interested in the Toyota Camry listed at GH₵ 185,000. Is it still available? Can I schedule an inspection this weekend?',
-                car: 'Toyota Camry 2022', date: '2026-05-10', location: 'Accra' },
-            { id: 2, name: 'Abena Amankwah', email: 'abena@email.com', phone: '+233 24 987 6543',
-                message: 'Hello, I want to know if the Honda Civic is negotiable. I have a budget of GH₵ 200,000. Please let me know.',
-                car: 'Honda Civic 2023', date: '2026-05-12', location: 'Kumasi' },
-            { id: 3, name: 'Emmanuel Nartey', email: 'emmanuel@email.com', phone: '+233 55 456 7890',
-                message: 'I saw your Mercedes C-Class listing. Can you confirm the mileage and if it has a valid warranty? Very interested buyer here.',
-                car: 'Mercedes C-Class 2023', date: '2026-05-13', location: 'Tema' },
-        ];
 
         // Load cars from Firestore
 async function loadCarsFromFirestore() {
@@ -1523,26 +1512,51 @@ async function deleteCarFromFirestore(docId) {
         }
 
         // ============ INQUIRIES ============
-        function renderInquiries() {
-            const grid = document.getElementById('inquiriesGrid');
-            grid.innerHTML = dummyInquiries.map(inq => `
-                <div class="inquiry-card">
-                    <h4>${inq.name}</h4>
-                    <div class="inquiry-meta">
-                        <span><i class="fa-solid fa-envelope"></i> ${inq.email}</span>
-                        <span><i class="fa-solid fa-phone"></i> ${inq.phone}</span>
-                        <span><i class="fa-solid fa-calendar"></i> ${inq.date}</span>
-                    </div>
-                    <p class="inquiry-msg">"${inq.message}"</p>
-                    <div class="inquiry-car">🚗 Interested in: <strong>${inq.car}</strong> — ${inq.location}</div>
-                    <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-                        <a href="https://wa.me/${inq.phone.replace(/[\s\+]/g,'')}" target="_blank" style="background:#25d366;color:#fff;padding:0.5rem 1rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
-                            <i class="fa-brands fa-whatsapp"></i> Reply via WhatsApp
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-        }
+       async function renderInquiries() {
+  const grid = document.getElementById('inquiriesGrid');
+  grid.innerHTML = '<p style="text-align:center; padding:2rem; color:var(--gray-500);"><i class="fa-solid fa-spinner fa-spin"></i> Loading inquiries…</p>';
+
+  try {
+    const snapshot = await db.collection('inquiries')
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    const inquiries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    if (inquiries.length === 0) {
+      grid.innerHTML = `
+        <div style="text-align:center; padding:3rem; color:var(--gray-400); grid-column:1/-1;">
+          <i class="fa-solid fa-envelope-open-text" style="font-size:3rem; margin-bottom:1rem; display:block;"></i>
+          <p>No inquiries yet.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = inquiries.map(inq => `
+      <div class="inquiry-card">
+        <h4>${inq.name || 'Anonymous'}</h4>
+        <div class="inquiry-meta">
+          <span><i class="fa-solid fa-envelope"></i> ${inq.email || 'No email'}</span>
+          <span><i class="fa-solid fa-phone"></i> ${inq.phone || 'No phone'}</span>
+          <span><i class="fa-solid fa-calendar"></i> ${inq.createdAt ? new Date(inq.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown date'}</span>
+        </div>
+        <p class="inquiry-msg">"${inq.carDetails || 'No details provided'}"</p>
+        <div class="inquiry-car">💰 Asking Price: <strong>GH₵ ${inq.price ? parseInt(inq.price).toLocaleString() : '—'}</strong></div>
+        <div style="margin-top:1rem;display:flex;gap:0.5rem; flex-wrap:wrap;">
+          <a href="https://wa.me/${(inq.phone || '').replace(/[\s\+]/g,'')}" target="_blank" style="background:#25d366;color:#fff;padding:0.5rem 1rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+            <i class="fa-brands fa-whatsapp"></i> Reply via WhatsApp
+          </a>
+          <a href="tel:${inq.phone || ''}" style="background:var(--gold);color:var(--primary);padding:0.5rem 1rem;border-radius:50px;text-decoration:none;font-size:0.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+            <i class="fa-solid fa-phone"></i> Call
+          </a>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading inquiries:', error);
+    grid.innerHTML = '<p style="text-align:center;color:var(--red-accent);">Failed to load inquiries. Please try again later.</p>';
+  }
+}
 
         // ============ CAR MODAL ============
         function openAddCarModal() {
