@@ -1107,6 +1107,15 @@
                             <label>Website URL</label>
                             <input type="text" value="https://mrgeniusauto.com" id="settingsUrl">
                         </div>
+                        <div class="form-group">
+    <label>Hero Banner Image</label>
+    <input type="file" id="bannerFile" accept="image/*" onchange="previewBanner()">
+    <small style="color:var(--gray-500);">Upload a wide banner (recommended 1200×600px, max 5MB)</small>
+    <div id="bannerPreview" style="margin-top:10px;"></div>
+    <button class="btn btn-primary" onclick="uploadBanner()" style="margin-top:0.5rem;">
+        <i class="fa-solid fa-cloud-upload-alt"></i> Upload Banner
+    </button>
+</div>
                         <button class="btn btn-primary" onclick="saveSettings()">
                             <i class="fa-solid fa-floppy-disk"></i> Save Settings
                         </button>
@@ -1310,6 +1319,7 @@ function handleLogout() {
         // ============ INITIALIZATION ============
 async function initAdmin() {
   loadSettings();
+  loadBannerPreview()
   carsData = await loadCarsFromFirestore();
   refreshDashboard();
   renderCarTable();
@@ -1442,6 +1452,47 @@ async function processImages(files) {
     base64Array.push(compressed);
   }
   return base64Array;
+}
+
+        // ============ BANNER UPLOAD ============
+function previewBanner() {
+  const file = document.getElementById('bannerFile').files[0];
+  const container = document.getElementById('bannerPreview');
+  container.innerHTML = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.style = 'max-width:300px; border-radius:8px; margin-top:10px;';
+    container.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadBanner() {
+  const file = document.getElementById('bannerFile').files[0];
+  if (!file) {
+    showToast('Please select a banner image first.', 'error');
+    return;
+  }
+
+  // Compress the banner (reuse your compressImage function)
+  const compressedBase64 = await compressImage(file);
+  
+  try {
+    // Save to Firestore
+    await db.collection('settings').doc('site').set({
+      bannerImage: compressedBase64,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    // Update preview
+    document.getElementById('bannerPreview').innerHTML = `<img src="${compressedBase64}" style="max-width:300px; border-radius:8px; margin-top:10px;">`;
+    showToast('✅ Banner uploaded! Refresh the public site to see it.', 'success');
+  } catch (error) {
+    showToast('Error: ' + error.message, 'error');
+  }
 }
 
 // Delete car
@@ -1754,6 +1805,15 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
                 } catch (e) {}
             }
         }
+
+        async function loadBannerPreview() {
+  try {
+    const doc = await db.collection('settings').doc('site').get();
+    if (doc.exists && doc.data().bannerImage) {
+      document.getElementById('bannerPreview').innerHTML = `<img src="${doc.data().bannerImage}" style="max-width:300px; border-radius:8px; margin-top:10px;">`;
+    }
+  } catch (e) {}
+}
 
         // ============ SIDEBAR TOGGLE (MOBILE) ============
         function toggleSidebar() {
