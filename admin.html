@@ -932,7 +932,7 @@
             </a>
             <a data-page="inquiries" onclick="navigateTo('inquiries', this)">
                 <i class="fa-solid fa-envelope"></i> Inquiries
-                <span style="margin-left:auto;background:var(--red-accent);color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:50px;font-weight:700;">3</span>
+                <span id="inquiryBadge" style="margin-left:auto;background:var(--red-accent);color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:50px;font-weight:700;">3</span>
             </a>
             <a data-page="settings" onclick="navigateTo('settings', this)">
                 <i class="fa-solid fa-gear"></i> Settings
@@ -1001,7 +1001,7 @@
                     <div class="stat-card">
                         <div class="stat-icon red"><i class="fa-solid fa-envelope"></i></div>
                         <div class="stat-info">
-                            <h3>3</h3>
+                            <h3 id="statInquiries">3</h3>
                             <p>New Inquiries</p>
                         </div>
                     </div>
@@ -1314,6 +1314,7 @@ async function initAdmin() {
   refreshDashboard();
   renderCarTable();
   renderInquiries();
+  updateInquiryCount();
 }
         
 let carsData = [];
@@ -1365,6 +1366,24 @@ let carToDelete = null;
 async function loadCarsFromFirestore() {
   const snapshot = await carsCollection.orderBy('createdAt', 'desc').get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+        async function updateInquiryCount() {
+  try {
+    const snapshot = await db.collection('inquiries').get();
+    const count = snapshot.size;
+    // Update sidebar badge
+    const badge = document.getElementById('inquiryBadge');
+    if (badge) {
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'inline' : 'none';
+    }
+    // Update dashboard stat
+    const stat = document.getElementById('statInquiries');
+    if (stat) stat.textContent = count;
+  } catch (error) {
+    console.error('Failed to load inquiry count:', error);
+  }
 }
 
 // Save car (add or update)
@@ -1786,6 +1805,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     showToast('🗑️ Inquiry deleted!', 'success');
     // Refresh the list immediately
     renderInquiries();
+    updateInquiryCount();
   } catch (error) {
     showToast('Error: ' + error.message, 'error');
   }
