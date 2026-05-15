@@ -485,6 +485,24 @@
             letter-spacing: 0.5px;
             z-index: 2;
         }
+        .carousel-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 2;
+  pointer-events: none; /* so it doesn't block clicks */
+}
+
+/* Hide counter if there's only one image */
+.carousel-counter.single {
+  display: none;
+}
         .car-card-badge.featured { background: var(--gold); color: var(--primary); }
         .car-card-badge.new { background: #10b981; }
         .car-card-fav {
@@ -1271,6 +1289,7 @@
                                     <div class="carousel-track">
                                         ${car.images.map(img => `<img src="${img}" alt="${car.model}" loading="lazy">`).join('')}
                                     </div>
+                                    ${car.images.length > 1 ? `<span class="carousel-counter" id="counter-${car.id}">1 / ${car.images.length}</span>` : ''}
                                     ${car.images.length > 1 ? `
                                         <button class="carousel-btn prev" onclick="event.stopPropagation(); moveCarousel(this, -1)">❮</button>
                                         <button class="carousel-btn next" onclick="event.stopPropagation(); moveCarousel(this, 1)">❯</button>
@@ -1328,14 +1347,24 @@ carsGrid.addEventListener('click', function(e) {
 });
 
         function moveCarousel(btn, direction) {
-            const track = btn.parentElement.querySelector('.carousel-track');
-            const slides = track.children;
-            const slideWidth = track.clientWidth;
-            let currentIndex = parseInt(track.dataset.index || '0');
-            currentIndex = (currentIndex + direction + slides.length) % slides.length;
-            track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-            track.dataset.index = currentIndex;
-        }
+  const carousel = btn.parentElement; // the .carousel div
+  const track = carousel.querySelector('.carousel-track');
+  const slides = track.children;
+  const slideWidth = track.clientWidth;
+  const totalSlides = slides.length;
+
+  let currentIndex = parseInt(track.dataset.index || '0');
+  currentIndex = (currentIndex + direction + totalSlides) % totalSlides;
+
+  track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+  track.dataset.index = currentIndex;
+
+  // Update the counter badge
+  const counter = carousel.querySelector('.carousel-counter');
+  if (counter) {
+    counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+  }
+}
 
         function applyFilters() {
   let filtered = allCars;
