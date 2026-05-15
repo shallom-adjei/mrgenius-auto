@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mr. Genius Premium Automobile | Buy & Sell Cars in Ghana</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23c8963e' d='M8 38c0-2.2 1.8-4 4-4h40c2.2 0 4 1.8 4 4v10c0 2.2-1.8 4-4 4H12c-2.2 0-4-1.8-4-4V38z'/%3E%3Cpath fill='%230a1628' d='M12 34h40v4H12z'/%3E%3Ccircle cx='20' cy='48' r='5' fill='%23333'/%3E%3Ccircle cx='44' cy='48' r='5' fill='%23333'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -969,6 +970,18 @@
             <h2 class="section-title">Top Picks For You</h2>
             <p class="section-subtitle">Hand-picked quality vehicles from verified sellers across Ghana</p>
         </div>
+
+<div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+    <label style="font-weight:600; color:var(--gray-700);">Sort by:</label>
+    <select id="sortSelect" onchange="applyFilters()" style="padding:0.5rem 1rem; border-radius:8px; border:1px solid var(--gray-300); font-family:var(--font-sans); font-size:0.9rem; background:white;">
+        <option value="default">Default (Newest)</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="year-desc">Year: Newest</option>
+        <option value="year-asc">Year: Oldest</option>
+    </select>
+</div>
+        
         <div class="brands-scroll" id="brandFilter" style="margin-bottom:2rem;">
             <span class="brand-chip active-filter" data-brand="all">🏷️ All Brands</span>
             <span class="brand-chip" data-brand="toyota"><span class="brand-emoji">🚙</span> Toyota</span>
@@ -979,7 +992,13 @@
             <span class="brand-chip" data-brand="mercedes"><span class="brand-emoji">🏎️</span> Mercedes</span>
             <span class="brand-chip" data-brand="bmw"><span class="brand-emoji">🚀</span> BMW</span>
         </div>
-        <div class="cars-grid" id="carsGrid"></div>
+        <div class="cars-grid" id="carsGrid">
+    <!-- Loading spinner -->
+    <div id="loadingSpinner" style="text-align:center; padding:4rem; grid-column:1/-1;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:3rem; color:var(--gold);"></i>
+        <p style="color:var(--gray-500); margin-top:1rem;">Loading cars…</p>
+    </div>
+</div>
         <div class="no-results" id="noResults">
             <i class="fa-solid fa-car-side"></i>
             <p>No cars match your filters. Try adjusting your search criteria.</p>
@@ -1217,8 +1236,9 @@
             const snapshot = await db.collection('cars').orderBy('createdAt', 'desc').get();
             allCars = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             applyFilters();
+            document.getElementById('loadingSpinner').style.display = 'none';
         }
-
+        
         function renderCars(filteredCars) {
             carsGrid.innerHTML = '';
             if (filteredCars.length === 0) {
@@ -1312,13 +1332,28 @@ carsGrid.addEventListener('click', function(e) {
         }
 
         function applyFilters() {
-            let filtered = allCars;
-            if (activeBrand !== 'all') filtered = filtered.filter(car => car.make === activeBrand);
-            if (searchMakeVal) filtered = filtered.filter(car => car.make === searchMakeVal);
-            if (searchPriceVal) filtered = filtered.filter(car => car.price <= parseInt(searchPriceVal));
-            if (searchLocationVal) filtered = filtered.filter(car => car.location === searchLocationVal);
-            renderCars(filtered);
-        }
+  let filtered = allCars;
+
+  if (activeBrand !== 'all') filtered = filtered.filter(car => car.make === activeBrand);
+  if (searchMakeVal) filtered = filtered.filter(car => car.make === searchMakeVal);
+  if (searchPriceVal) filtered = filtered.filter(car => car.price <= parseInt(searchPriceVal));
+  if (searchLocationVal) filtered = filtered.filter(car => car.location === searchLocationVal);
+
+  // Sorting
+  const sortVal = document.getElementById('sortSelect').value;
+  if (sortVal === 'price-asc') {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (sortVal === 'price-desc') {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (sortVal === 'year-desc') {
+    filtered.sort((a, b) => b.year - a.year);
+  } else if (sortVal === 'year-asc') {
+    filtered.sort((a, b) => a.year - b.year);
+  }
+  // default keeps Firestore's original order (by createdAt)
+
+  renderCars(filtered);
+}
 
         function toggleFav(btn, carId) {
             btn.classList.toggle('liked');
