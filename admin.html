@@ -1480,17 +1480,29 @@ async function uploadBanner() {
     return;
   }
 
-  // Compress the banner (reuse your compressImage function)
-  const compressedBase64 = await compressImage(file);
-  
+  // Use a dedicated compressor for banners (wide, high quality)
+  const compressedBase64 = await new Promise((resolve, reject) => {
+    new Compressor(file, {
+      quality: 0.9,          // high quality (car images use 0.7)
+      maxWidth: 1600,        // wide enough for full‑screen hero
+      maxHeight: 900,        // keeps aspect ratio
+      mimeType: 'image/jpeg',
+      success(result) {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(result);
+      },
+      error(err) { reject(err); }
+    });
+  });
+
   try {
-    // Save to Firestore
     await db.collection('settings').doc('site').set({
       bannerImage: compressedBase64,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
 
-    // Update preview
     document.getElementById('bannerPreview').innerHTML = `<img src="${compressedBase64}" style="max-width:300px; border-radius:8px; margin-top:10px;">`;
     showToast('✅ Banner uploaded! Refresh the public site to see it.', 'success');
   } catch (error) {
