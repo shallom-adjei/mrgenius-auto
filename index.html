@@ -1268,17 +1268,20 @@ let currentFiltersChanged = false; // flag to reset on filter change
         }
 
        async function loadCarsFromFirestore(reset = true) {
-  if (reset) {
-    // Reset everything for fresh load
+ if (reset) {
     allCars = [];
     lastVisibleDoc = null;
     noMoreCars = false;
     document.getElementById('loadMoreContainer').style.display = 'none';
-    // Show spinner
-    document.getElementById('loadingSpinner').style.display = 'block';
-    document.getElementById('carsGrid').innerHTML = '';
-    document.getElementById('carsGrid').appendChild(document.getElementById('loadingSpinner'));
-  }
+    // Clear old cars but KEEP the spinner
+    const grid = document.getElementById('carsGrid');
+    const spinner = document.getElementById('loadingSpinner');
+    grid.innerHTML = '';
+    if (spinner) {
+        grid.appendChild(spinner);
+        spinner.style.display = 'block';
+    }
+}
 
   let query = db.collection('cars').orderBy('createdAt', 'desc').limit(CARS_PER_PAGE);
 
