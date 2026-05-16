@@ -942,7 +942,7 @@
             <div class="sidebar-user">
                 <div class="sidebar-avatar">SA</div>
                 <div class="sidebar-user-info">
-                    <div class="sidebar-user-name">Shallom Admin</div>
+                    <div class="sidebar-user-name" id="sidebarAdminName">Shallom Admin</div>
                     <div class="sidebar-user-role">Super Admin</div>
                 </div>
             </div>
@@ -1814,6 +1814,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     const phone = document.getElementById('settingsPhone').value;
     const url = document.getElementById('settingsUrl').value;
     localStorage.setItem('mrgenius_admin_settings', JSON.stringify({ name, email, phone, url }));
+            document.getElementById('sidebarAdminName').textContent = name;
     const saved = document.getElementById('settingsSaved');
     saved.style.display = 'inline';
     setTimeout(() => { saved.style.display = 'none'; }, 2500);
@@ -1832,6 +1833,16 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
         } catch (e) {}
     }
 }
+
+        // Update sidebar name from stored settings
+const storedName = localStorage.getItem('mrgenius_admin_settings');
+if (storedName) {
+    try {
+        const s = JSON.parse(storedName);
+        if (s.name) document.getElementById('sidebarAdminName').textContent = s.name;
+    } catch(e) {}
+}
+        
 
         async function loadBannerPreview() {
   try {
