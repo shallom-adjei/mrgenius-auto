@@ -1210,9 +1210,9 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/233549598797?text=Hello%20Mr.%20Genius%20Premium%20Automobile!%20I'm%20interested%20in%20buying%20a%20car." class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <a id="whatsappFloat" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>
 
     <div class="scroll-top" id="scrollTop" title="Back to top">
         <i class="fa-solid fa-chevron-up"></i>
@@ -1274,6 +1274,7 @@ async function loadHeroBanner() {
 
 // Call it after page loads
 loadHeroBanner();
+updateWhatsAppFloat();
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1302,6 +1303,14 @@ let currentFiltersChanged = false; // flag to reset on filter change
         function getAdminPhoneClean() {
             return getAdminPhone().replace(/[\s\+]/g, '');
         }
+
+        function updateWhatsAppFloat() {
+    const floatBtn = document.getElementById('whatsappFloat');
+    if (floatBtn) {
+        const phoneClean = getAdminPhoneClean();
+        floatBtn.href = `https://wa.me/${phoneClean}?text=Hello%20Mr.%20Genius%20Premium%20Automobile!%20I'm%20interested%20in%20buying%20a%20car.`;
+    }
+}
 
        async function loadCarsFromFirestore(reset = true) {
  if (reset) {
