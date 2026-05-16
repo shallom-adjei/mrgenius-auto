@@ -1296,6 +1296,10 @@ let currentFiltersChanged = false; // flag to reset on filter change
     }
     return '+233 54 959 8797';
 }
+        function getWhatsAppMessage(car) {
+    const seller = car.sellerName || 'Mr. Genius Auto';
+    return `Hello%20${encodeURIComponent(seller)}!%20I%20am%20interested%20in%20the%20${encodeURIComponent(car.model)}%20(${car.year})%20priced%20at%20GH%E2%82%B5%20${car.price.toLocaleString()}.%20Is%20it%20still%20available%3F`;
+}
         function getAdminPhoneClean() {
             return getAdminPhone().replace(/[\s\+]/g, '');
         }
@@ -1612,10 +1616,11 @@ carsGrid.addEventListener('click', function(e) {
                 <p><strong>Year:</strong> ${car.year} &nbsp; <strong>Condition:</strong> ${car.condition === 'new' ? 'Brand New' : 'Used'}</p>
                 <p><strong>Mileage:</strong> ${car.mileage} &nbsp; <strong>Transmission:</strong> ${car.transmission}</p>
                 <p><strong>Fuel:</strong> ${car.fuel} &nbsp; <strong>Location:</strong> ${car.location.charAt(0).toUpperCase() + car.location.slice(1)}</p>
+                ${car.sellerName ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerName}</p>` : ''}
                 ${car.sellerPhone ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerPhone}</p>` : ''}
             `;
-           const contact = getCarContact(car);
-const msg = `Hello%20Mr.%20Genius%20Auto!%20I%20am%20interested%20in%20the%20${encodeURIComponent(car.model)}%20(${car.year})%20priced%20at%20GH%E2%82%B5%20${car.price.toLocaleString()}.%20Is%20it%20still%20available%3F`;
+          const contact = getCarContact(car);
+const msg = getWhatsAppMessage(car);
 document.getElementById('detailWhatsAppBtn').href = `https://wa.me/${contact.whatsappClean}?text=${msg}`;
 document.getElementById('detailCallBtn').href = `tel:${contact.phone}`;
             document.getElementById('detailModalOverlay').classList.add('active');
