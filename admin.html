@@ -1809,29 +1809,29 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
 
         // ============ SETTINGS ============
         function saveSettings() {
-            const name = document.getElementById('settingsName').value;
-            const email = document.getElementById('settingsEmail').value;
-            const phone = document.getElementById('settingsPhone').value;
-            const url = document.getElementById('settingsUrl').value;
-            localStorage.setItem('mrgenius_admin_settings', JSON.stringify({ name, email, phone, url }));
-            const saved = document.getElementById('settingsSaved');
-            saved.style.display = 'inline';
-            setTimeout(() => { saved.style.display = 'none'; }, 2500);
-            showToast('⚙️ Settings saved!', 'success');
-        }
+    const name = document.getElementById('settingsName').value;
+    const email = document.getElementById('settingsEmail').value;
+    const phone = document.getElementById('settingsPhone').value;
+    const url = document.getElementById('settingsUrl').value;
+    localStorage.setItem('mrgenius_admin_settings', JSON.stringify({ name, email, phone, url }));
+    const saved = document.getElementById('settingsSaved');
+    saved.style.display = 'inline';
+    setTimeout(() => { saved.style.display = 'none'; }, 2500);
+    showToast('⚙️ Settings saved!', 'success');
+}
 
         function loadSettings() {
-            const stored = localStorage.getItem('mrgenius_admin_settings');
-            if (stored) {
-                try {
-                    const s = JSON.parse(stored);
-                    if (s.name) document.getElementById('settingsName').value = s.name;
-                    if (s.email) document.getElementById('settingsEmail').value = s.email;
-                    if (s.phone) document.getElementById('settingsPhone').value = s.phone;
-                    if (s.url) document.getElementById('settingsUrl').value = s.url;
-                } catch (e) {}
-            }
-        }
+    const stored = localStorage.getItem('mrgenius_admin_settings');
+    if (stored) {
+        try {
+            const s = JSON.parse(stored);
+            if (s.name) document.getElementById('settingsName').value = s.name;
+            if (s.email) document.getElementById('settingsEmail').value = s.email;
+            if (s.phone) document.getElementById('settingsPhone').value = s.phone;
+            if (s.url) document.getElementById('settingsUrl').value = s.url;
+        } catch (e) {}
+    }
+}
 
         async function loadBannerPreview() {
   try {
