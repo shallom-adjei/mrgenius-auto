@@ -1616,8 +1616,7 @@ carsGrid.addEventListener('click', function(e) {
                 <p><strong>Year:</strong> ${car.year} &nbsp; <strong>Condition:</strong> ${car.condition === 'new' ? 'Brand New' : 'Used'}</p>
                 <p><strong>Mileage:</strong> ${car.mileage} &nbsp; <strong>Transmission:</strong> ${car.transmission}</p>
                 <p><strong>Fuel:</strong> ${car.fuel} &nbsp; <strong>Location:</strong> ${car.location.charAt(0).toUpperCase() + car.location.slice(1)}</p>
-                ${car.sellerName ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerName}</p>` : ''}
-                ${car.sellerPhone ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerPhone}</p>` : ''}
+               ${car.sellerName ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerName}${car.sellerPhone ? ` · ${car.sellerPhone}` : ''}</p>` : car.sellerPhone ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-phone"></i> ${car.sellerPhone}</p>` : ''}
             `;
           const contact = getCarContact(car);
 const msg = getWhatsAppMessage(car);
@@ -1714,9 +1713,6 @@ document.getElementById('detailCallBtn').href = `tel:${contact.phone}`;
 
         loadCarsFromFirestore(true);
         console.log('🏎️  Mr. Genius Premium Automobile — Ready!');
-
-        loadHeroBanner();
-        updateWhatsAppFloat();
         
 function clearAllFilters() {
     // Reset brand chips
