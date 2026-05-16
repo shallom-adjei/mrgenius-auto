@@ -1300,6 +1300,16 @@ let currentFiltersChanged = false; // flag to reset on filter change
             return getAdminPhone().replace(/[\s\+]/g, '');
         }
 
+        function getCarContact(car) {
+    const adminPhone = getAdminPhone();
+    const adminClean = getAdminPhoneClean();
+    return {
+        phone: car.sellerPhone || adminPhone,
+        phoneClean: (car.sellerPhone || adminPhone).replace(/[\s\+]/g, ''),
+        whatsappClean: (car.sellerWhatsapp || adminClean).replace(/[\s\+]/g, ''),
+    };
+}
+
         function updateWhatsAppFloat() {
     const floatBtn = document.getElementById('whatsappFloat');
     if (floatBtn) {
@@ -1418,7 +1428,7 @@ let currentFiltersChanged = false; // flag to reset on filter change
                                 <i class="fa-solid fa-location-dot"></i> ${locationLabel}, Ghana
                             </div>
                             <div style="margin-top:1rem;">
-                              <button class="buy-btn" data-car-id="${car.id}">
+                             <button class="buy-btn" data-car-id="${car.id}">
     <i class="fa-brands fa-whatsapp"></i> Buy / Inquire
 </button>
                             </div>
@@ -1602,12 +1612,12 @@ carsGrid.addEventListener('click', function(e) {
                 <p><strong>Year:</strong> ${car.year} &nbsp; <strong>Condition:</strong> ${car.condition === 'new' ? 'Brand New' : 'Used'}</p>
                 <p><strong>Mileage:</strong> ${car.mileage} &nbsp; <strong>Transmission:</strong> ${car.transmission}</p>
                 <p><strong>Fuel:</strong> ${car.fuel} &nbsp; <strong>Location:</strong> ${car.location.charAt(0).toUpperCase() + car.location.slice(1)}</p>
+                ${car.sellerPhone ? `<p style="margin-top:0.5rem; color:var(--gray-600);"><i class="fa-solid fa-user"></i> <strong>Seller:</strong> ${car.sellerPhone}</p>` : ''}
             `;
-            const adminPhoneClean = getAdminPhoneClean();
-            const adminPhone = getAdminPhone();
-            const msg = `Hello%20Mr.%20Genius%20Auto!%20I%20am%20interested%20in%20the%20${encodeURIComponent(car.model)}%20(${car.year})%20priced%20at%20GH%E2%82%B5%20${car.price.toLocaleString()}.%20Is%20it%20still%20available%3F`;
-            document.getElementById('detailWhatsAppBtn').href = `https://wa.me/${adminPhoneClean}?text=${msg}`;
-            document.getElementById('detailCallBtn').href = `tel:${adminPhone}`;
+           const contact = getCarContact(car);
+const msg = `Hello%20Mr.%20Genius%20Auto!%20I%20am%20interested%20in%20the%20${encodeURIComponent(car.model)}%20(${car.year})%20priced%20at%20GH%E2%82%B5%20${car.price.toLocaleString()}.%20Is%20it%20still%20available%3F`;
+document.getElementById('detailWhatsAppBtn').href = `https://wa.me/${contact.whatsappClean}?text=${msg}`;
+document.getElementById('detailCallBtn').href = `tel:${contact.phone}`;
             document.getElementById('detailModalOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
