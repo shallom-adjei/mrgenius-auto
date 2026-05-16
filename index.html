@@ -1293,12 +1293,12 @@ let noMoreCars = false;         // true when all cars from DB are loaded
 let currentFiltersChanged = false; // flag to reset on filter change
 
         function getAdminPhone() {
-            const cached = localStorage.getItem('mrgenius_admin_settings');
-            if (cached) {
-                try { const s = JSON.parse(cached); return s.phone || '+233 54 959 8797'; } catch(e) {}
-            }
-            return '+233 54 959 8797';
-        }
+    const cached = localStorage.getItem('mrgenius_admin_settings');
+    if (cached) {
+        try { const s = JSON.parse(cached); return s.phone || '+233 54 959 8797'; } catch(e) {}
+    }
+    return '+233 54 959 8797';
+}
         function getAdminPhoneClean() {
             return getAdminPhone().replace(/[\s\+]/g, '');
         }
