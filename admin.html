@@ -1218,6 +1218,10 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+    <label>Seller Name</label>
+    <input type="text" id="carSellerName" placeholder="e.g. Kwame Asante">
+</div>
                 <div class="form-row">
     <div class="form-group">
         <label>Seller WhatsApp</label>
@@ -1694,6 +1698,7 @@ async function deleteCarFromFirestore(docId) {
   document.getElementById('carBadge').value = car.badge || '';
   document.getElementById('carSellerWhatsapp').value = car.sellerWhatsapp || '';
   document.getElementById('carSellerPhone').value = car.sellerPhone || '';
+  document.getElementById('carSellerName').value = car.sellerName || '';
   // Clear the file input (can't pre-fill base64 images)
   document.getElementById('carImages').value = '';
   previewMultipleImages();
@@ -1721,6 +1726,7 @@ async function deleteCarFromFirestore(docId) {
   document.getElementById('carBadge').value = '';
   document.getElementById('carSellerWhatsapp').value = '';
   document.getElementById('carSellerPhone').value = '';
+  document.getElementById('carSellerName').value = '';
   // Clear file input
   document.getElementById('carImages').value = '';
   previewMultipleImages(); // clear previews
@@ -1740,6 +1746,7 @@ async function deleteCarFromFirestore(docId) {
   const badge = document.getElementById('carBadge').value;
   const sellerWhatsapp = document.getElementById('carSellerWhatsapp').value.trim();
   const sellerPhone = document.getElementById('carSellerPhone').value.trim();
+  const sellerName = document.getElementById('carSellerName').value.trim();
 
   // --- Validation ---
   if (!model) { showToast('Please enter a model name.', 'error'); return; }
@@ -1765,7 +1772,7 @@ async function deleteCarFromFirestore(docId) {
 
   const carData = {
     make, model, year, price, mileage, transmission, fuel,
-    location, condition, badge, sellerWhatsapp, sellerPhone,
+    location, condition, badge, sellerName, sellerWhatsapp, sellerPhone,
     images: imageBase64Array,  // array of Base64 strings
   };
 
