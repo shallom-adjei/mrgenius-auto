@@ -1322,7 +1322,7 @@ function handleLogout() {
         // ============ INITIALIZATION ============
 async function initAdmin() {
   loadSettings();
-  loadBannerPreview()
+  loadBannerPreview();
   carsData = await loadCarsFromFirestore();
   refreshDashboard();
   renderCarTable();
