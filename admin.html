@@ -1432,9 +1432,9 @@ function previewMultipleImages() {
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     new Compressor(file, {
-      quality: 0.7,
-      maxWidth: 800,
-      maxHeight: 600,
+      quality: 0.85,          // up from 0.7 – noticeably sharper
+      maxWidth: 1200,         // up from 800 – good for the modal
+      maxHeight: 900,         // up from 600
       mimeType: 'image/jpeg',
       success(result) {
         const reader = new FileReader();
