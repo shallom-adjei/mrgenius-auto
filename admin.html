@@ -1218,6 +1218,16 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-row">
+    <div class="form-group">
+        <label>Seller WhatsApp</label>
+        <input type="text" id="carSellerWhatsapp" placeholder="e.g. +233 55 091 3186">
+    </div>
+    <div class="form-group">
+        <label>Seller Phone</label>
+        <input type="text" id="carSellerPhone" placeholder="e.g. +233 55 091 3186">
+    </div>
+</div>
                 <div class="form-group">
   <label>Car Images (select multiple)</label>
   <input type="file" id="carImages" accept="image/*" multiple onchange="previewMultipleImages()">
@@ -1682,6 +1692,8 @@ async function deleteCarFromFirestore(docId) {
   document.getElementById('carLocation').value = car.location;
   document.getElementById('carCondition').value = car.condition;
   document.getElementById('carBadge').value = car.badge || '';
+  document.getElementById('carSellerWhatsapp').value = car.sellerWhatsapp || '';
+  document.getElementById('carSellerPhone').value = car.sellerPhone || '';
   // Clear the file input (can't pre-fill base64 images)
   document.getElementById('carImages').value = '';
   previewMultipleImages();
@@ -1707,6 +1719,8 @@ async function deleteCarFromFirestore(docId) {
   document.getElementById('carLocation').value = 'accra';
   document.getElementById('carCondition').value = 'used';
   document.getElementById('carBadge').value = '';
+  document.getElementById('carSellerWhatsapp').value = '';
+  document.getElementById('carSellerPhone').value = '';
   // Clear file input
   document.getElementById('carImages').value = '';
   previewMultipleImages(); // clear previews
@@ -1724,6 +1738,8 @@ async function deleteCarFromFirestore(docId) {
   const location = document.getElementById('carLocation').value;
   const condition = document.getElementById('carCondition').value;
   const badge = document.getElementById('carBadge').value;
+  const sellerWhatsapp = document.getElementById('carSellerWhatsapp').value.trim();
+  const sellerPhone = document.getElementById('carSellerPhone').value.trim();
 
   // --- Validation ---
   if (!model) { showToast('Please enter a model name.', 'error'); return; }
@@ -1749,7 +1765,7 @@ async function deleteCarFromFirestore(docId) {
 
   const carData = {
     make, model, year, price, mileage, transmission, fuel,
-    location, condition, badge,
+    location, condition, badge, sellerWhatsapp, sellerPhone,
     images: imageBase64Array,  // array of Base64 strings
   };
 
